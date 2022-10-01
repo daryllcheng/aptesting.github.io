@@ -1,0 +1,562 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta http-equiv="X-UA-Compatible" content="ie=edge"/><title>Afterpay Button Scaffold</title><style>body {
+        font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+      }
+      /* Credit card information styles */
+      .cc-container {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #817f7f;
+        border-radius: 5px;
+        padding: 20px 10px;
+        justify-items: center;
+        align-items: center;
+      }
+
+      .cc-container input {
+        margin: 20px;
+      }
+
+      .cc-header {
+        display: flex;
+        flex-direction: column;
+        justify-items: center;
+        align-items: center;
+      }
+      .cc-header div,
+      .vg-header div {
+        font-weight: bold;
+      }
+      .cc-header small,
+      .vg-header small {
+        margin-top: 5px;
+      }
+      .cc-body {
+        margin-top: 20px;
+        max-width: 100%;
+      }
+
+      /* Variant generator information styles */
+
+      .variant-generator {
+        display: flex;
+        flex-direction: column;
+        margin: 20px;
+      }
+
+      .vg-header {
+        display: flex;
+        flex-direction: column;
+        justify-items: center;
+        align-items: center;
+      }
+
+      .vg-body {
+        display: flex;
+        flex-direction: row;
+        margin: 20px;
+        justify-content: center;
+        align-content: center;
+      }
+
+      .vg-output {
+        display: flex;
+        flex-direction: column;
+        margin-top: 20px;
+        justify-items: center;
+        align-items: center;
+      }
+
+      .vg-output .vg-output-header {
+        font-weight: bold;
+      }
+
+      .vg-body .vg-attributes .vg-attributes-body {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .vg-body .vg-attributes .vg-attributes-body div {
+        margin: 5px 0px;
+      }
+
+      .vg-body .vg-attributes .vg-attributes-body span {
+        font-style: italic;
+      }
+
+      .vg-body .vg-attributes .vg-attributes-body,
+      .vg-output .vg-output-body {
+        margin-top: 20px;
+        max-width: 100%;
+      }
+
+      .vg-output .message {
+        color: #e66262;
+        margin-top: 5px;
+      }
+
+      /* Override cursor style to pointer */
+      afterpay-button {
+        --cursor-style: pointer;
+      }</style><script defer="defer" src="https://daryllcheng.github.io/aptesting.github.io/afterpay-button.js"></script></head><body><div class="cc-container"><div class="cc-header"><div>Credit card information</div><small>Auto-fills after you complete the checkout process</small></div><div class="cc-body"><label>CC #:<input id="creditCardNumber" placeholder="1498139193411"/></label> <label>CVC<input id="creditCardCvc" placeholder="323"/></label> <label for="creditCardExpiryMonth">Expiry Month <input id="creditCardExpiryMonth" placeholder="12"/></label> <label for="creditCardExpiryYear">Expiry Year<input id="creditCardExpiryYear" placeholder="2022"/></label> <input type="submit" id="creditCardForm" onclick="console.log('submitted')"/></div></div><div class="variant-generator"><div class="vg-header"><div>Variant Generator</div><small>Change the attribute values to generate new variants</small></div><div class="vg-body"><div class="vg-attributes"><div class="vg-attributes-body"><span>&lt;afterpay-button</span><div>text: <select id="text"><option value="pay-now">Pay now</option><option value="place-order">Place order</option><option value="checkout">Checkout</option><option value="buy-now" selected="selected">Buy now</option><option value="shop-now">Shop now</option></select></div><div>theme: <select id="theme"><option value="black-on-mint" selected="selected">Black on mint</option><option value="mint-on-black">Mint on black</option><option value="white-on-black">White on black</option><option value="white-mint-on-black">White and mint on black</option></select></div><div>amount: <select id="amount"><option value="0">$0.00</option><option value="4">$4.00</option><option value="10">$10.00</option><option selected="selected" value="50">$50.00</option></select></div><div>region: <select id="region"><option value="US">US</option><option value="CA">CA</option><option value="GB">GB</option></select></div><div>instorePickup: <input name="instorePickup" type="checkbox"/></div><span>&gt;&lt;/afterpay-button&gt;</span></div></div></div><div class="vg-output"><div class="vg-output-header">Afterpay Button</div><span class="message"></span><div class="vg-output-body"><afterpay-button merchantpublickey="822ce7ffc2fa41258904baad1d0fe07351e89375108949e8bd951d387ef0e932"></afterpay-button></div></div><div class="vg-output"><div class="vg-output-header">Cash App Pay</div><span class="message"></span><div class="vg-output-body"><div>Cash App Pay UI: <select id="cashAppPayUI"><option selected="selected">Pick one</option><option value="managedUI">Managed UI</option><option value="advancedUI">Advanced UI</option></select></div><afterpay-button iscashapppay merchantpublickey="abaa2250913d4db3885c185e97284a42f65edd169b744d65863b574ce36e51e9"></afterpay-button></div></div><div class="cc-container"><div class="cc-header"><div>Express Checkout</div></div><div class="cc-body"><div class="vg-output"><div class="vg-output-header"></div><span class="message"></span><div class="vg-output-body"><afterpay-button type="express" class="afterpay-express-button" afterpayentrypoint="cart" afterpaycheckoutbuttonlabel="Express Checkout" merchantpublickey="822ce7ffc2fa41258904baad1d0fe07351e89375108949e8bd951d387ef0e932">Express Checkout</afterpay-button></div></div><afterpay-widget></afterpay-widget><div id="afterpay-widget-container"></div></div></div></div><script>const afterpayButtons = document.querySelectorAll('afterpay-button')
+      const afterpayWidget = document.querySelector('afterpay-widget')
+      const submitCard = document.querySelector('input[type=submit]')
+
+      const regionMapper = (region) => {
+        switch (region) {
+          case 'US':
+            return {
+              merchantPublicKey: '822ce7ffc2fa41258904baad1d0fe07351e89375108949e8bd951d387ef0e932',
+              currency: 'USD',
+              code: 'US',
+              email: 'daryll.cheng@afterpay.com',
+              locale: 'en-US',
+              endpoint: 'https://api-plus.us-sandbox.afterpay.com/v3/button/simulate/auth'
+            }
+            break
+          case 'CA':
+            return {
+              merchantPublicKey: 'bf78a3897f4b4a1283e94d9e6b5827902ad530d5383c495da4b250fd344737aa',
+              currency: 'CAD',
+              code: 'CA',
+              email: 'daryll.cheng+6@afterpay.com', // Requires a Canadian consumer account
+              locale: 'en-CA',
+              endpoint: 'https://api-plus.us-sandbox.afterpay.com/v3/button/simulate/auth'
+            }
+            break
+          case 'GB':
+            return {
+              merchantPublicKey: 'bf78a3897f4b4a1283e94d9e6b5827902ad530d5383c495da4b250fd344737aa',
+              currency: 'GBP',
+              code: 'GB',
+              email: 'daryll.cheng+4@afterpay.com',
+              locale: 'en-GB',
+              endpoint: 'https://api-plus.eu-sandbox.afterpay.com/v3/button/simulate/auth'
+            }
+            break
+          default:
+            return {
+              merchantPublicKey: '822ce7ffc2fa41258904baad1d0fe07351e89375108949e8bd951d387ef0e932',
+              currency: 'USD',
+              code: 'US',
+              email: 'daryll.cheng@afterpay.com',
+              locale: 'en-US',
+              endpoint: 'https://api-plus.us-sandbox.afterpay.com/v3/button/simulate/auth'
+            }
+        }
+      }
+
+      // text constants
+      const PAY_NOW = 'pay-now'
+      const PLACE_ORDER = 'place-order'
+      const CHECKOUT = 'checkout'
+      const BUY_NOW = 'buy-now'
+      const SHOP_NOW = 'shop-now'
+
+      // theme constants
+      const BLACK_ON_MINT = 'black-on-mint'
+      const MINT_ON_BLACK = 'mint-on-black'
+      const WHITE_ON_BLACK = 'white-on-black'
+      const WHITE_MINT_ON_BLACK = 'white-mint-on-black'
+
+      const mapTextToTheme = {
+        [PAY_NOW]: [BLACK_ON_MINT, MINT_ON_BLACK, WHITE_MINT_ON_BLACK],
+        [PLACE_ORDER]: [BLACK_ON_MINT, WHITE_ON_BLACK],
+        [CHECKOUT]: [BLACK_ON_MINT, WHITE_ON_BLACK],
+        [BUY_NOW]: [BLACK_ON_MINT, WHITE_ON_BLACK],
+        [SHOP_NOW]: [BLACK_ON_MINT, MINT_ON_BLACK, WHITE_MINT_ON_BLACK]
+      }
+
+      // simulate a client side authorization
+      // TODO: move out of index.html
+      async function simulateAuth(authToken, token, amount, currency, endpoint) {
+        return fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          },
+          body: JSON.stringify({
+            authToken: authToken,
+            token: token,
+            amount: {
+              currency: currency,
+              amount: amount
+            }
+          })
+        }).then((resp) => {
+          console.log('status: ', resp['status'])
+          return resp.json()
+        })
+      }
+
+      function getInputValues() {
+        let priceText = document.querySelector('#amount')
+        let region = document.querySelector('#region')
+
+        return {
+          amount: priceText.children[priceText.selectedIndex].value,
+          regionSpecificValues: regionMapper(region.children[region.selectedIndex].value)
+        }
+      }
+
+      function createCustomButton() {
+        // Create custom button
+        const cashAppPayCustomButton = document.createElement('button')
+        cashAppPayCustomButton.classList.add('btn', 'cash-app-pay-custom-button')
+        cashAppPayCustomButton.textContent = 'Continue with'
+
+        // Attach cash app pay logo to button
+        const cashAppPayLogo = document.createElement('cash-app-pay-logo')
+        cashAppPayCustomButton.appendChild(cashAppPayLogo)
+        document.getElementById('cash-app-pay').after(cashAppPayCustomButton)
+      }
+
+      function initializeCashAppPayListeners(afterpayButton) {
+        var cashAppPayListenerOptions = {
+          onComplete: function (event) {
+            console.log(`onComplete: ${JSON.stringify(event.data, null, 4)}`)
+            var { cashtag } = event.data
+            window.alert(`Success: ${cashtag}`)
+          },
+          /* Optional event listeners */
+          eventListeners: {
+            CUSTOMER_INTERACTION: ({ isMobile }) => {
+              console.log(`CUSTOMER_INTERACTION is on Mobile: ${isMobile}`)
+            },
+            CUSTOMER_REQUEST_DECLINED: () => {
+              console.log(`CUSTOMER_REQUEST_DECLINED`)
+            },
+            CUSTOMER_REQUEST_APPROVED: () => {
+              console.log(`CUSTOMER_REQUEST_APPROVED`)
+            },
+            CUSTOMER_REQUEST_FAILED: () => {
+              console.log(`CUSTOMER_REQUEST_FAILED`)
+            }
+          }
+        }
+        afterpayButton.initializeCashAppPayListeners({ countryCode: 'US', cashAppPayListenerOptions })
+      }
+
+      function initializeCashAppPay(afterpayButton) {
+        const cashAppPayOptions = {
+          /* PayKit Button Configurations */
+          button: {
+            size: 'small', // "medium" | "small"
+            width: 'full', // "full" | "static"
+            theme: 'dark', // "dark" | "light"
+            shape: 'round' // "round" | "semiround"
+          },
+          redirectConfirmUrl: window.location.href,
+          // set the onError callback
+          onError: function (event) {
+            console.log(`onError: ${JSON.stringify(event.data, null, 4)}`)
+          },
+          // set the onComplete callback
+          // The virtual card needs to be authorized less than 60 minutes after the card is returned to the merchant.
+          onComplete: function (event) {
+            const { status, token, authToken } = event.data
+            console.table({ status, token, authToken })
+            // The consumer confirmed the payment schedule.
+            // The virtualCard details can be inserted into your checkout
+            if (status === 'SUCCESS') {
+              if (event.data.virtualCard) {
+                const { virtualCard } = event.data
+                console.table(virtualCard)
+                const { cardNumber, cvc, expiryMonth, expiryYear } = virtualCard
+                document.getElementById('creditCardNumber').value = cardNumber
+                document.getElementById('creditCardCvc').value = cvc
+                document.getElementById('creditCardExpiryMonth').value = expiryMonth
+                document.getElementById('creditCardExpiryYear').value = expiryYear
+              } else if (event.data.virtualCardToken) {
+                const { virtualCardToken } = event.data
+                const { paymentGateway, cardToken, expiryMonth, expiryYear } = virtualCardToken
+                console.table({ paymentGateway, cardToken, expiryMonth, expiryYear })
+              }
+            } else if (status === 'CANCELLED') console.log('Transaction was cancelled.') // The consumer cancelled the payment or closed the popup window.
+          },
+          /* Optional event listeners for merchants to track customer behavior */
+          eventListeners: {
+            CUSTOMER_REQUEST_APPROVED: ({ isMobile }) => {
+              console.log(`Customer request approved`)
+              if (isMobile) {
+                // captureMobileMetrics()
+              } else {
+                // captureDesktopMetrics()
+              }
+            }
+          }
+        }
+
+        const cashAppPayButtonOptions = {
+          button: false,
+          manage: false,
+          onBegin: function ({ begin }) {
+            document.querySelector('.cash-app-pay-custom-button').addEventListener('click', () => {
+              bindAttributesToButton(afterpayButton)
+              afterpayButton.initializeForCashAppPay(cashAppPayOptions)
+              begin()
+            })
+          },
+          onComplete: function (event) {
+            console.log(`onComplete: ${JSON.stringify(event.data, null, 4)}`)
+            var { cashtag } = event.data
+            window.alert(`Success: ${cashtag}`)
+          }
+        }
+
+        const cashAppPayUI = document.getElementById('cashAppPayUI')
+
+        cashAppPayUI.addEventListener('change', (e) => {
+          const { value } = e.target
+          if (value === 'managedUI') {
+            bindAttributesToButton(afterpayButton)
+            afterpayButton.initializeForCashAppPay(cashAppPayOptions)
+          } else if (value === 'advancedUI') {
+            createCustomButton()
+            afterpayButton.renderCashAppPayButton({
+              countryCode: 'US',
+              cashAppPayButtonOptions
+            })
+          }
+          cashAppPayUI.disabled = true
+        })
+
+        setTimeout(() => {
+          initializeCashAppPayListeners(afterpayButton)
+        }, 1000)
+      }
+
+      // handler function to be bound to all instances of the afterpay-button
+      function bindAttributesToButton(afterpayButton) {
+        const { currency, code, email } = getInputValues().regionSpecificValues
+        // The merchant’s unique order id/reference that this payment corresponds to. This is used to reconcile orders in the Afterpay merchant portal.
+        afterpayButton.merchantReference = ''
+        //Money Object
+        // The total amount of the order to be charged to the consumer. This includes any shipping and tax, minus any discounts. This will be the maximum amount that you can charge to the virtual Visa Card.
+        afterpayButton.amount = getInputValues().amount // required
+        // The currency in ISO 4217 format. The value provided must correspond to the currency of the Merchant account making the request.
+        afterpayButton.currency = currency // required
+        //Item Object
+        afterpayButton.items = JSON.stringify([
+          {
+            name: 'name',
+            sku: 'sku',
+            quantity: 1,
+            price: {
+              amount: '100.00',
+              currency: currency
+            },
+            pageUrl: 'some url',
+            imageUrl: 'some url',
+            categories: [['item']]
+          }
+        ])
+        //Consumer Object
+        afterpayButton.shippingName = 'shippingName'
+        afterpayButton.consumerPhoneNumber = '0404040404'
+        afterpayButton.consumerGivenNames = 'consumerGivenNames'
+        afterpayButton.consumerSurname = 'consumerSurname'
+        afterpayButton.consumerEmail = email // required
+        //Contact Object
+        afterpayButton.shippingLine1 = 'shippingLine1'
+        afterpayButton.shippingLine2 = 'shippingLine2'
+        afterpayButton.shippingArea1 = 'shippingArea1'
+        afterpayButton.shippingArea2 = 'shippingArea2'
+        afterpayButton.shippingRegion = 'shippingRegion'
+        afterpayButton.shippingPostcode = 'shippingPostcode'
+        afterpayButton.shippingCountryCode = code
+        afterpayButton.shippingPhoneNumber = 'phoneNumber'
+        //Contact Object
+        afterpayButton.billingName = 'billingName'
+        afterpayButton.billingLine1 = 'billingLine1'
+        afterpayButton.billingLine2 = 'billingLine2'
+        afterpayButton.billingArea1 = 'billingArea1'
+        afterpayButton.billingArea2 = 'billingArea2'
+        afterpayButton.billingRegion = 'billingRegion'
+        afterpayButton.billingPostcode = 'billingPostcode'
+        afterpayButton.billingCountryCode = code
+        afterpayButton.billingphoneNumber = 'billingphoneNumber'
+
+        // set the onError callback
+        afterpayButton.onError = function (event) {
+          const { errorCode, errorId, message, httpStatusCode } = event.data
+          console.table({ errorCode, errorId, message, httpStatusCode })
+        }
+
+        // set the onComplete callback
+        // The virtual card needs to be authorized less than 60 minutes after the card is returned to the merchant.
+        afterpayButton.onComplete = function (event) {
+          const { status, token, authToken } = event.data
+          console.table({ status, token, authToken })
+          // The consumer confirmed the payment schedule.
+          // The virtualCard details can be inserted into your checkout
+          if (status === 'SUCCESS') {
+            if (event.data.virtualCard) {
+              const { virtualCard } = event.data
+              console.table(virtualCard)
+              const { cardNumber, cvc, expiryMonth, expiryYear } = virtualCard
+              document.getElementById('creditCardNumber').value = cardNumber
+              document.getElementById('creditCardCvc').value = cvc
+              document.getElementById('creditCardExpiryMonth').value = expiryMonth
+              document.getElementById('creditCardExpiryYear').value = expiryYear
+            } else if (event.data.virtualCardToken) {
+              const { virtualCardToken } = event.data
+              const { paymentGateway, cardToken, expiryMonth, expiryYear } = virtualCardToken
+              console.table({ paymentGateway, cardToken, expiryMonth, expiryYear })
+            }
+            // after we get back a card, setup click event to simulate card auth
+            submitCard.addEventListener('click', () => handleSubmitClick(authToken, token))
+          } else if (status === 'CANCELLED') console.log('Transaction was cancelled.') // The consumer cancelled the payment or closed the popup window.
+        }
+      }
+
+      // Express Checkout
+      function bindExpressCheckoutToButton(afterpayButton) {
+        const { currency, code } = getInputValues().regionSpecificValues
+        const { amount } = getInputValues()
+        afterpayButton.expressCheckout = {
+          region: code, // Set region to the two-character ISO 3166-1 country code of the Merchant account
+          onShippingAddressChange: function (data, actions) {
+            /* required for Integrated Shipping  */
+            /* address in `data` */
+            /* calc options, then call `actions.resolve(options)` */
+            if (data.countryCode !== code) {
+              // Reject any unsupported shipping addresses
+              actions.reject(AfterPay.CONSTANTS.SHIPPING_UNSUPPORTED)
+            } else {
+              // Calc shipping inline
+              actions.resolve([
+                {
+                  id: '1',
+                  name: 'Standard',
+                  description: '3 - 5 days',
+                  shippingAmount: { amount: '0.00', currency },
+                  taxAmount: { amount: '3.18', currency },
+                  orderAmount: { amount: `${parseInt(amount) + 3.18}`, currency }
+                },
+                {
+                  id: '2',
+                  name: 'Priority',
+                  description: 'Next business day',
+                  shippingAmount: { amount: '10.99', currency },
+                  taxAmount: { amount: '4.28', currency },
+                  orderAmount: { amount: `${parseInt(amount) + 10.99 + 4.28}`, currency }
+                }
+              ])
+            }
+          },
+          onShippingOptionChange: function (data) {
+            /* optional - chosen option in `data` */
+            console.table(data)
+          },
+          buyNow: false, // This shows the user a “Buy Now” button at the end of the Afterpay checkout flow
+          pickup: false,
+          // Set the flag shippingOptionRequired to:
+          //   false: if shipping options are not required to be displayed in the Express Checkout flow
+          //   true: if you intend to provide shipping options to to the consumer within the Express Checkout flow (i.e. Integrated Shipping). This is the default value
+          shippingOptionRequired: true
+        }
+      }
+
+      afterpayButtons.forEach((afterpayButton) => {
+        // click handler for submit button (opens a dialog to confirm the auth amount)
+        async function handleSubmitClick(authToken, token) {
+          const { currency, endpoint } = regionMapper(region.children[region.selectedIndex].value)
+          const amount = prompt('Auth amount: ', afterpayButton.amount)
+          simulateAuth(authToken, token, amount, currency, endpoint).then((resp) => {
+            if (resp.successful === true) alert('successfuly authorized amount')
+            else alert('could not authorize amount')
+          })
+        }
+
+        function handleButtonClick(e) {
+          bindAttributesToButton(afterpayButton)
+          afterpayButton.hasAttribute('afterpayEntryPoint') && bindExpressCheckoutToButton(afterpayButton)
+        }
+
+        /* add event listeners */
+        afterpayButton.addEventListener('click', handleButtonClick, true) // for button click
+        afterpayButton.hasAttribute('isCashAppPay') && initializeCashAppPay(afterpayButton)
+      })
+
+      // Payment Schedule Widget
+      // The Checkout Widget is a component that needs to be placed on the site if the order value is subject to change after the Express Checkout flow.
+      // It displays the consumer payment schedule and can be updated as the total changes (e.g. in response to shipping costs and promo codes).
+      // It can be used to enable dynamic order total updates on a review page for both Express Checkout and standard Afterpay Checkout.
+      function bindConfigToWidget() {
+        const { currency, locale } = getInputValues().regionSpecificValues
+        const { amount } = getInputValues()
+        // Widget is responsive and will fit any container with a minimum width of 300 pixels.
+        afterpayWidget.widgetConfig = {
+          target: '#afterpay-widget-container',
+          locale: locale,
+          amount: {
+            amount: amount,
+            currency: currency
+          },
+          onReady: function (event) {
+            // Fires when the widget is ready to accept updates.
+            console.log('Widget onReady', event)
+          },
+          onChange: function (event) {
+            // Fires after each update and on any other state changes.
+            // See "Getting the widget's state" for more details.
+            console.log('Widget onChange', event)
+          }
+        }
+      }
+
+      bindConfigToWidget()
+      // for dropdown changes
+      document.querySelectorAll('select').forEach((dropdown) => {
+        dropdown.addEventListener('change', (e) => {
+          const { id, value } = e.target
+          const { amount, regionSpecificValues } = getInputValues()
+
+          // check that the specified theme is supported by the specified text
+          const elMessage = document.querySelector('.message')
+          // if the theme is present in the text-theme mapping for the specified text
+          if (!mapTextToTheme[document.getElementById('text').value].includes(document.getElementById('theme').value))
+            elMessage.innerHTML = 'This text-theme combination is not supported currently. Default theme will be displayed.' // set the error message
+          else elMessage.innerHTML = '' // else empty the message span
+
+          // the id of select element is the same as the attribute name
+          // this makes the state change easier
+          afterpayButtons.forEach((afterpayButton) => {
+            afterpayButton[id] = value
+
+            if (id === 'region') {
+              afterpayButton.merchantPublicKey = regionMapper(value).merchantPublicKey
+            }
+          })
+          if (id === 'region') {
+            afterpayWidget.widgetConfig.locale = regionMapper(value).locale
+            afterpayWidget.update({
+              amount: {
+                amount: amount,
+                currency: regionMapper(value).currency
+              }
+            })
+          }
+          if (id === 'amount') {
+            const { currency } = regionSpecificValues
+            // Any time the order total changes (e.g. a change of shipping option, promo code, or cart contents), the widget must be notified of the new amount.
+            // An initial update must also be performed in the onReady callback to initialize the widget.
+            afterpayWidget.update({
+              amount: {
+                amount: value,
+                currency: currency
+              }
+            })
+          }
+        })
+      })
+
+      // If the customer has chosen to pick up the order in a store, no shipping address is required, instead, set instorePickup to true.
+      const instorePickupCheckbox = document.querySelector('input[name=instorePickup]')
+
+      instorePickupCheckbox.addEventListener('change', function () {
+        afterpayButtons.forEach((afterpayButton) => {
+          afterpayButton['instorePickup'] = this.checked
+        })
+      })</script></body></html>
